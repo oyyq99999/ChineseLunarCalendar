@@ -7,9 +7,9 @@ import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 import static oyyq.calendar.util.CalendarUtil.getJulianCentury;
 import static oyyq.calendar.util.CalendarUtil.getJulianThousandYears;
-import static oyyq.calendar.util.Iau2000BUtil.getLongitudeNutation;
 import static oyyq.calendar.util.MathUtil.mod2Pi;
 import static oyyq.calendar.util.MathUtil.secondsToRadians;
+import static oyyq.calendar.util.iau.Iau2000BUtil.getLongitudeNutation;
 
 /**
  * EARTH - VSOP87 Series Version D<br />
