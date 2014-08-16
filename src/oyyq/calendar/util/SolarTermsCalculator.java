@@ -1,9 +1,9 @@
 package oyyq.calendar.util;
 
 import static java.lang.Math.PI;
-import static java.lang.Math.abs;
 import static oyyq.calendar.util.CalendarUtil.fromJulianDate;
 import static oyyq.calendar.util.CalendarUtil.toJulianDate;
+import static oyyq.calendar.util.MathUtil.newtonIteration;
 import static oyyq.calendar.util.Vsop87dEarthUtil.getEarthEclipticLongitudeForSun;
 
 import java.util.Map;
@@ -17,8 +17,6 @@ import java.util.Map;
 public class SolarTermsCalculator {
 
     private static final double RADIANS_PER_TERM = PI / 12;
-    private static final double EPSILON          = 0.0000001d;
-    private static final double DELTA       = 0.000005d;
 
     /**
      * 用牛顿迭代计算节气时间
@@ -35,21 +33,21 @@ public class SolarTermsCalculator {
         int month = term.getMonth();
         int estimateDate = term.getEstimateDate();
         double jd1 = toJulianDate(year, month, estimateDate);
-        double jd;
-        do {
-            jd = jd1;
-            double fx = getEarthEclipticLongitudeForSun(jd) - angle;
-            while (fx < -PI) {
-                fx += 2 * PI;
+        Function f = new Function() {
+
+            @Override
+            public double f(double jd) {
+                double fx = getEarthEclipticLongitudeForSun(jd) - angle;
+                while (fx < -PI) {
+                    fx += 2 * PI;
+                }
+                while (fx > PI) {
+                    fx -= 2 * PI;
+                }
+                return fx;
             }
-            while (fx > PI) {
-                fx -= 2 * PI;
-            }
-            double fpx = (getEarthEclipticLongitudeForSun(jd + DELTA) - getEarthEclipticLongitudeForSun(jd
-                    - DELTA))
-                    / DELTA / 2;
-            jd1 = jd - fx / fpx;
-        } while (abs(jd1 - jd) > EPSILON);
+        };
+        double jd = newtonIteration(f, jd1);
         return jd;
     }
 

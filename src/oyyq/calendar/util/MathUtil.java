@@ -2,6 +2,7 @@ package oyyq.calendar.util;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.toRadians;
+import static java.lang.Math.abs;
 
 public class MathUtil {
 
@@ -87,5 +88,27 @@ public class MathUtil {
      */
     public static double dmsToRadians(int d, int m, double s) {
         return toRadians(dmsToDegrees(d, m, s));
+    }
+
+    /**
+     * 牛顿迭代求解方程的根
+     *
+     * @param f
+     *            方程表达式
+     * @param x0
+     *            对根的估值
+     * @return 在x0附近的一个根
+     */
+    public static double newtonIteration(Function f, double x0) {
+        final double EPSILON = 1e-7;
+        final double DELTA = 5e-6;
+        double x;
+        do {
+            x = x0;
+            double fx = f.f(x);
+            double fpx = (f.f(x + DELTA) - f.f(x - DELTA)) / DELTA / 2;
+            x0 = x - fx / fpx;
+        } while (abs(x0 - x) > EPSILON);
+        return x;
     }
 }
