@@ -3,6 +3,7 @@ package oyyq.calendar.util;
 import static java.lang.Math.PI;
 import static oyyq.calendar.util.CalendarUtil.fromJulianDate;
 import static oyyq.calendar.util.CalendarUtil.toJulianDate;
+import static oyyq.calendar.util.MathUtil.modPi;
 import static oyyq.calendar.util.MathUtil.newtonIteration;
 import static oyyq.calendar.util.Vsop87dEarthUtil.getEarthEclipticLongitudeForSun;
 
@@ -33,21 +34,8 @@ public class SolarTermsCalculator {
         int month = term.getMonth();
         int estimateDate = term.getEstimateDate();
         double jd1 = toJulianDate(year, month, estimateDate);
-        Function f = new Function() {
-
-            @Override
-            public double f(double jd) {
-                double fx = getEarthEclipticLongitudeForSun(jd) - angle;
-                while (fx < -PI) {
-                    fx += 2 * PI;
-                }
-                while (fx > PI) {
-                    fx -= 2 * PI;
-                }
-                return fx;
-            }
-        };
-        double jd = newtonIteration(f, jd1);
+        double jd = newtonIteration(
+                (double x) -> modPi(getEarthEclipticLongitudeForSun(x) - angle), jd1);
         return jd;
     }
 

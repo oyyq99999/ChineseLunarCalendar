@@ -35,6 +35,23 @@ public class MathUtil {
     }
 
     /**
+     * 把角度限制在[-π, π]之间
+     * 
+     * @param r
+     *            原角度(rad)
+     * @return 转换后的角度(rad)
+     */
+    public static double modPi(double r) {
+        while (r < -PI) {
+            r += PI * 2;
+        }
+        while (r > PI) {
+            r -= PI * 2;
+        }
+        return r;
+    }
+
+    /**
      * 把角秒换算成角度
      * 
      * @param seconds
