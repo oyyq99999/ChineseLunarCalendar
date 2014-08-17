@@ -1,14 +1,14 @@
 package oyyq.calendar.util.elpmpp02.data;
 
-public class Elp_Pert_S2 {
+public class Elp_Pert_S2 extends Elp_Pert {
 
-    private static final int     LINE_ITEMS   = 15;
+    public static final int      LINE_ITEMS   = 15;
     private static final int     EACH_LINES   = 400;
     private static final int     EACH_ITEMS   = EACH_LINES * LINE_ITEMS;
-    private static final int     TOTAL_LINES0 = 6462;
-    private static final int     TOTAL_LINES1 = 516;
-    private static final int     TOTAL_LINES2 = 52;
-    private static final int     TOTAL_LINES3 = 0;
+    public static final int      TOTAL_LINES0 = 6462;
+    public static final int      TOTAL_LINES1 = 516;
+    public static final int      TOTAL_LINES2 = 52;
+    public static final int      TOTAL_LINES3 = 0;
     public static final Number[] PARAMS0      = new Number[LINE_ITEMS * TOTAL_LINES0];
     public static final Number[] PARAMS1      = new Number[LINE_ITEMS * TOTAL_LINES1];
     public static final Number[] PARAMS2      = new Number[LINE_ITEMS * TOTAL_LINES2];

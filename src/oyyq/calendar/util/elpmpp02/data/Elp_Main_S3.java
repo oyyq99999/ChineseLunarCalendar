@@ -1,10 +1,10 @@
 package oyyq.calendar.util.elpmpp02.data;
 
-public class Elp_Main_S3 {
+public class Elp_Main_S3 extends Elp_Main {
 
-    private static final int     LINE_ITEMS  = 10;
+    public static final int      LINE_ITEMS  = 10;
     private static final int     EACH_LINES  = 600;
-    private static final int     TOTAL_LINES = 704;
+    public static final int      TOTAL_LINES = 704;
     private static final int     EACH_ITEMS  = EACH_LINES * LINE_ITEMS;
     public static final Number[] PARAMS      = new Number[LINE_ITEMS * TOTAL_LINES];
 
