@@ -110,8 +110,8 @@ class ElpMpp02Constants {
         W2_1 += secondsToRadians(W2_1 / GNU - M * (BP_21 + 2 / 3.0 * GALPHA / M * BP_25))
                 * DELTAU_W1_1_DE + (BP_21 + 2 / 3.0 * GALPHA / M * BP_25) * DELTAU_T_1_DE + GNU
                 * (BP_22 * DELTAU_GGAMMA_DE + BP_23 * DELTAU_E_DE + BP_24 * DELTAU_EP_DE);
-        W3_1 += secondsToRadians(W2_1 / GNU - M * (BP_21 + 2 / 3.0 * GALPHA / M * BP_25))
-                * DELTAU_W1_1_DE + (BP_21 + 2 / 3.0 * GALPHA / M * BP_25) * DELTAU_T_1_DE + GNU
-                * (BP_22 * DELTAU_GGAMMA_DE + BP_23 * DELTAU_E_DE + BP_24 * DELTAU_EP_DE);
+        W3_1 += secondsToRadians(W3_1 / GNU - M * (BP_31 + 2 / 3.0 * GALPHA / M * BP_35))
+                * DELTAU_W1_1_DE + (BP_31 + 2 / 3.0 * GALPHA / M * BP_35) * DELTAU_T_1_DE + GNU
+                * (BP_32 * DELTAU_GGAMMA_DE + BP_33 * DELTAU_E_DE + BP_34 * DELTAU_EP_DE);
     }
 }
