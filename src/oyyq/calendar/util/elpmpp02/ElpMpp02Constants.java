@@ -45,12 +45,6 @@ class ElpMpp02Constants {
     static final double DELTAU_GOMEGAP_0_DE = -0.00749;
     static final double DELTAU_EP_DE        = +0.00224;
 
-    static final double DELTA_GNU           = 0.55604 + DELTAU_W1_1_DE;
-    static final double DELTA_GGAMMA        = -0.08066 + DELTAU_GGAMMA_DE;
-    static final double DELTA_E             = 0.01789 + DELTAU_E_DE;
-    static final double DELTA_EP            = -0.12879 + DELTAU_EP_DE;
-    static final double DELTA_NP            = -0.0642 + DELTAU_NP_DE;
-
     static final double BP_21               = +0.311079095;
     static final double BP_22               = -0.004482398;
     static final double BP_23               = -0.001102485;
@@ -88,6 +82,12 @@ class ElpMpp02Constants {
     static final double W3_3                = secondsToRadians(0.007625 + DELTAU_W3_3);
     static final double W3_4                = secondsToRadians(-0.00003586);
 
+    static final double DELTA_GNU           = secondsToRadians(0.55604 + DELTAU_W1_1_DE) / W1_1;
+    static final double DELTA_GGAMMA        = secondsToRadians(-0.08066 + DELTAU_GGAMMA_DE);
+    static final double DELTA_E             = secondsToRadians(0.01789 + DELTAU_E_DE);
+    static final double DELTA_EP            = secondsToRadians(-0.12879 + DELTAU_EP_DE);
+    static final double DELTA_NP            = secondsToRadians(-0.0642 + DELTAU_NP_DE) / W1_1;
+
     static final double T_0                 = dmsToRadians(100, 27, 59.13885 + DELTAU_T_0_DE);
     static final double T_1                 = secondsToRadians(129597742.2930 + DELTAU_T_1_DE);
     static final double T_2                 = secondsToRadians(-0.0202);
@@ -107,11 +107,11 @@ class ElpMpp02Constants {
     static final double GALPHA              = 0.002571881;
 
     static {
-        W2_1 += secondsToRadians(W2_1 / GNU - M * (BP_21 + 2 / 3.0 * GALPHA / M * BP_25))
+        W2_1 += secondsToRadians((W2_1 / GNU - M * (BP_21 + 2 / 3.0 * GALPHA / M * BP_25))
                 * DELTAU_W1_1_DE + (BP_21 + 2 / 3.0 * GALPHA / M * BP_25) * DELTAU_T_1_DE + GNU
-                * (BP_22 * DELTAU_GGAMMA_DE + BP_23 * DELTAU_E_DE + BP_24 * DELTAU_EP_DE);
-        W3_1 += secondsToRadians(W3_1 / GNU - M * (BP_31 + 2 / 3.0 * GALPHA / M * BP_35))
+                * (BP_22 * DELTAU_GGAMMA_DE + BP_23 * DELTAU_E_DE + BP_24 * DELTAU_EP_DE));
+        W3_1 += secondsToRadians((W3_1 / GNU - M * (BP_31 + 2 / 3.0 * GALPHA / M * BP_35))
                 * DELTAU_W1_1_DE + (BP_31 + 2 / 3.0 * GALPHA / M * BP_35) * DELTAU_T_1_DE + GNU
-                * (BP_32 * DELTAU_GGAMMA_DE + BP_33 * DELTAU_E_DE + BP_34 * DELTAU_EP_DE);
+                * (BP_32 * DELTAU_GGAMMA_DE + BP_33 * DELTAU_E_DE + BP_34 * DELTAU_EP_DE));
     }
 }
