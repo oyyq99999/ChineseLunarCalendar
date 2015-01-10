@@ -1,9 +1,10 @@
 package oyyq.calendar.util.elp82simple;
 
-import static java.lang.Math.toRadians;
 import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 import static oyyq.calendar.util.CalendarUtil.getJulianCentury;
 import static oyyq.calendar.util.MathUtil.mod2Pi;
+import static oyyq.calendar.util.iau.Iau2000BUtil.getLongitudeNutation;
 
 public class Elp82Util {
 
@@ -103,17 +104,6 @@ public class Elp82Util {
     }
 
     /**
-     * A3 = 313.45 + 481266.484 * t
-     * 
-     * @param t
-     *            儒略世纪数
-     * @return A3的值(rad)
-     */
-    private static double getA3(double t) {
-        return mod2Pi(toRadians(313.45 + 481266.484 * t));
-    }
-
-    /**
      * E = 1 - 0.002516 * t - 0.0000074 * t²
      * 
      * @param t
@@ -136,7 +126,7 @@ public class Elp82Util {
 
         double a1 = getA1(t);
         double a2 = getA2(t);
-        double sumL = 0;
+        double sumL = 0.0;
 
         sumL += 6288774 * sin(mp);
         sumL += 1274027 * sin(2 * d - mp);
@@ -212,7 +202,7 @@ public class Elp82Util {
      */
     public static double getEarthEclipticLongitudeForMoon(double jd) {
         double t = getJulianCentury(jd);
-        return getLp(t) + toRadians(getSumL(t) / 1000000);
+        return getLp(t) + toRadians(getSumL(t) / 1000000) + getLongitudeNutation(jd);
     }
 
     public static void main(String[] args) {

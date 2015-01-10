@@ -6,7 +6,6 @@ import static oyyq.calendar.util.MathUtil.modPi;
 import static oyyq.calendar.util.MathUtil.newtonIteration;
 import static oyyq.calendar.util.Vsop87dEarthUtil.getEarthEclipticLongitudeForSun;
 import static oyyq.calendar.util.elp82simple.Elp82Util.getEarthEclipticLongitudeForMoon;
-import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class NewMoonCalculator {
 
     public static void main(String[] args) {
         for (int month = 1; month <= 12; month++) {
-            ArrayList<Double> jds = getJulianDayInYearAndMonthForNewMoon(1995, month);
+            ArrayList<Double> jds = getJulianDayInYearAndMonthForNewMoon(2011, month);
             for (double jd : jds) {
                 jd -= CalendarUtil.getDeltaT(jd) / 86400; // 由TT转换成UTC
                 Map<String, Number> cal = fromJulianDate(jd + 8.0 / 24.0); // 东8区
