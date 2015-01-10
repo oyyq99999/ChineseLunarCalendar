@@ -1,7 +1,7 @@
 package oyyq.calendar.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public final class CalendarUtil {
 
@@ -239,7 +239,7 @@ public final class CalendarUtil {
         return jdn + (h - 12) / 24.0d + minute / 1440.0d + s / 86400.0d;
     }
 
-    private static Map<String, Number> fromJulianDateHelper(int a, double f) {
+    private static Calendar fromJulianDateHelper(int a, double f, TimeZone tz) {
         int b = a + 1524;
         int c = (int) ((b - 122.1) / 365.25);
         int d = (int) (365.25 * c);
@@ -251,20 +251,22 @@ public final class CalendarUtil {
         int year = yyyy;
         int month = mm;
         int date = (int) dd;
-        int hour = (int) ((dd - date) * 24);
-        dd = (dd - date) * 24 - hour;
-        int minute = (int) (dd * 60);
-        double second = (dd * 60 - minute) * 60;
+        dd = (dd - date) * 24;
+        int hour = (int) dd;
+        dd = (dd - hour) * 60;
+        int minute = (int) dd;
+        dd = (dd - minute) * 60;
+        int second = (int) dd;
+        dd = (dd - second) * 1000;
+        int millisecond = (int) dd;
 
-        Map<String, Number> ret = new HashMap<>();
-        ret.put("year", year);
-        ret.put("month", month);
-        ret.put("date", date);
-        ret.put("hour", hour);
-        ret.put("minute", minute);
-        ret.put("second", second);
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        cal.set(year, month - 1, date, hour, minute, second);
+        cal.set(Calendar.MILLISECOND, millisecond);
+        cal.getTimeInMillis(); // 触发calendar的计算，下面改时区才有效
+        cal.setTimeZone(tz);
 
-        return ret;
+        return cal;
     }
 
     /**
@@ -272,15 +274,16 @@ public final class CalendarUtil {
      * 
      * @param jd
      *            儒略日
-     * @return 对应的Gregorian历TT日期时间的一个Map,各项的key为year, month, date, hour, minute,
-     *         second。其中second是double型，其余均是int型。
+     * @param tz
+     *            要使用的时区
+     * @return 对应的Gregorian历TT日期时间的一个Calendar对象，时区为 tz。
      */
-    public static Map<String, Number> fromJulianDateInGregorian(double jd) {
+    public static Calendar fromJulianDateInGregorian(double jd, TimeZone tz) {
         int z = (int) (jd + 0.5);
         double f = jd + 0.5 - z;
         int alpha = (int) ((z - 1867216.25) / 36524.25);
         int a = z + 1 + alpha - alpha / 4;
-        return fromJulianDateHelper(a, f);
+        return fromJulianDateHelper(a, f, tz);
     }
 
     /**
@@ -288,14 +291,15 @@ public final class CalendarUtil {
      * 
      * @param jd
      *            儒略日
-     * @return 对应的Julian历TT日期时间的一个Map,各项的key为year, month, date, hour, minute,
-     *         second。其中second是double型，其余均是int型。
+     * @param tz
+     *            要使用的时区
+     * @return 对应的Julian历TT日期时间的一个Calendar对象，时区为 tz。
      */
-    public static Map<String, Number> fromJulianDateInJulian(double jd) {
+    public static Calendar fromJulianDateInJulian(double jd, TimeZone tz) {
         int z = (int) (jd + 0.5);
         double f = jd + 0.5 - z;
         int a = z;
-        return fromJulianDateHelper(a, f);
+        return fromJulianDateHelper(a, f, tz);
     }
 
     /**
@@ -304,15 +308,61 @@ public final class CalendarUtil {
      * 
      * @param jd
      *            儒略日
-     * @return 对应的TT日期时间的一个Map,各项的key为year, month, date, hour, minute,
-     *         second。其中second是double型，其余均是int型。
+     * @return 对应的由TT转换到UTC之后的时间的一个Calendar对象，时区为系统默认时区。
      */
-    public static Map<String, Number> fromJulianDate(double jd) {
+    public static Calendar fromJulianDate(double jd) {
+        return fromJulianDate(jd, TimeZone.getDefault(), true);
+    }
+
+    /**
+     * 由儒略日计算对应的日期时间，算法参考<i>Jean Meeus</i>的<i>Astronomical Formulae for Calculators</i> 当儒略日小于<i>
+     * {@value #JULIAN_GREGORIAN_BOUNDARY} - 0.5</i>时按Julian历法计算，以后按Gregorian历计算。
+     * 
+     * @param jd
+     *            儒略日
+     * @param tz
+     *            使用的时区
+     * @return 对应的由TT转换到UTC之后的时间的一个Calendar对象，时区为tz。
+     */
+    public static Calendar fromJulianDate(double jd, TimeZone tz) {
+        return fromJulianDate(jd, tz, true);
+    }
+
+    /**
+     * 由儒略日计算对应的日期时间，算法参考<i>Jean Meeus</i>的<i>Astronomical Formulae for Calculators</i> 当儒略日小于<i>
+     * {@value #JULIAN_GREGORIAN_BOUNDARY} - 0.5</i>时按Julian历法计算，以后按Gregorian历计算。
+     * 
+     * @param jd
+     *            儒略日
+     * @param tt2ut
+     *            是否要做TT到UTC的转换
+     * @return 对应的时间的一个Calendar对象，时区为系统默认时区。
+     */
+    public static Calendar fromJulianDate(double jd, boolean tt2ut) {
+        return fromJulianDate(jd, TimeZone.getDefault(), tt2ut);
+    }
+
+    /**
+     * 由儒略日计算对应的日期时间，算法参考<i>Jean Meeus</i>的<i>Astronomical Formulae for Calculators</i> 当儒略日小于<i>
+     * {@value #JULIAN_GREGORIAN_BOUNDARY} - 0.5</i>时按Julian历法计算，以后按Gregorian历计算。
+     * 
+     * @param jd
+     *            儒略日
+     * @param tz
+     *            使用的时区
+     * @param tt2utc
+     *            是否要做TT到UTC的转换
+     * @return 对应的日期时间的一个Calendar对象，时区为tz。
+     */
+    public static Calendar fromJulianDate(double jd, TimeZone tz, boolean tt2utc) {
+        if (tt2utc) {
+            jd -= getDeltaT(jd) / 86400;
+        }
         int z = (int) (jd + 0.5);
         if (z < JULIAN_GREGORIAN_BOUNDARY) {
-            return fromJulianDateInJulian(jd);
+            return fromJulianDateInJulian(jd, tz);
         }
-        return fromJulianDateInGregorian(jd);
+        return fromJulianDateInGregorian(jd, tz);
     }
 
     /**
@@ -431,9 +481,9 @@ public final class CalendarUtil {
      * @return ∆T的值，单位为秒
      */
     public static double getDeltaT(double jd) {
-        Map<String, Number> cal = fromJulianDate(jd);
-        int year = cal.get("year").intValue();
-        int month = cal.get("month").intValue();
+        Calendar cal = fromJulianDate(jd, TimeZone.getTimeZone("GMT"), false);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
         return getDeltaT(year, month);
     }
 

@@ -8,7 +8,7 @@ import static oyyq.calendar.util.Vsop87dEarthUtil.getEarthEclipticLongitudeForSu
 import static oyyq.calendar.util.elp82simple.Elp82Util.getEarthEclipticLongitudeForMoon;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Calendar;
 
 /**
  * 使用牛顿迭代法计算日月合朔的时间 求解的方程为: <br />
@@ -35,8 +35,8 @@ public class NewMoonCalculator {
             double jd1 = toJulianDate(year, month, 10 * (i + 1));
             double jd = newtonIteration((double x) -> modPi(getEarthEclipticLongitudeForSun(x)
                     - getEarthEclipticLongitudeForMoon(x)), jd1);
-            Map<String, Number> cal = fromJulianDate(jd - CalendarUtil.getDeltaT(jd) / 86400 + 8.0 / 24.0);
-            if (cal.get("month").intValue() == month && (jd - lastJd > 1e-7)) {
+            Calendar cal = fromJulianDate(jd);
+            if (cal.get(Calendar.MONTH) + 1 == month && (jd - lastJd > 1e-7)) {
                 jds.add(jd);
                 lastJd = jd;
             }
@@ -46,13 +46,13 @@ public class NewMoonCalculator {
 
     public static void main(String[] args) {
         for (int month = 1; month <= 12; month++) {
-            ArrayList<Double> jds = getJulianDayInYearAndMonthForNewMoon(2011, month);
+            ArrayList<Double> jds = getJulianDayInYearAndMonthForNewMoon(1995, month);
             for (double jd : jds) {
-                jd -= CalendarUtil.getDeltaT(jd) / 86400; // 由TT转换成UTC
-                Map<String, Number> cal = fromJulianDate(jd + 8.0 / 24.0); // 东8区
-                System.out.println(String.format("%04d-%02d-%02d %02d:%02d:%09.6f",
-                        cal.get("year"), cal.get("month"), cal.get("date"), cal.get("hour"),
-                        cal.get("minute"), cal.get("second")));
+                Calendar cal = fromJulianDate(jd);
+                System.out.println(String.format("%04d-%02d-%02d %02d:%02d:%02d.%03d",
+                        cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE),
+                        cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
+                        cal.get(Calendar.SECOND), cal.get(Calendar.MILLISECOND)));
             }
         }
     }

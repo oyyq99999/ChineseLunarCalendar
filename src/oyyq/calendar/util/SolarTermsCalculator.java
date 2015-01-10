@@ -7,6 +7,7 @@ import static oyyq.calendar.util.MathUtil.modPi;
 import static oyyq.calendar.util.MathUtil.newtonIteration;
 import static oyyq.calendar.util.Vsop87dEarthUtil.getEarthEclipticLongitudeForSun;
 
+import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -43,12 +44,13 @@ public class SolarTermsCalculator {
         for (SolarTerms term : SolarTerms.values()) {
             double jd = getJulianDayInYearForTermOrder(term, 2011);
             jd -= CalendarUtil.getDeltaT(jd) / 86400; // 由TT转换成UTC
-            Map<String, Number> cal = fromJulianDate(jd + 8.0 / 24.0); // 东8区
+            Calendar cal = fromJulianDate(jd + 8.0 / 24.0); // 东8区
             System.out.println(term.getName()
                     + ": "
-                    + String.format("%04d-%02d-%02d %02d:%02d:%09.6f", cal.get("year"),
-                            cal.get("month"), cal.get("date"), cal.get("hour"), cal.get("minute"),
-                            cal.get("second")));
+                    + String.format("%04d-%02d-%02d %02d:%02d:%02d.%03d", cal.get(Calendar.YEAR),
+                            cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE),
+                            cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
+                            cal.get(Calendar.SECOND), cal.get(Calendar.MILLISECOND)));
         }
     }
 
