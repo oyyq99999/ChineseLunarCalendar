@@ -309,7 +309,6 @@ public class ElpMpp02Util {
      * @param jd
      *            儒略日
      * @return 月球的地心黄经，单位是弧度(rad)
-     * @throws Exception
      */
     public static double getEarthEclipticLongitudeForMoon(double jd) {
         double t = getJulianCentury(jd);
@@ -319,7 +318,6 @@ public class ElpMpp02Util {
             main = getMain(t, Elp_Main_S1.class);
             pert = getPert(t, Elp_Pert_S1.class);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return mod2Pi(main + pert + getW1u(t));
